@@ -317,10 +317,12 @@ const CreateANewCharacter = (data) => {
   const newCharacter = {
     Id: str,
     CurrentName: name,
+    
   };
+  console.log(newCharacter)
   const characterCreated = model.Character.create(newCharacter);
   promises.push(characterCreated);
-  characterCreated
+  return characterCreated
     .then((w) => {
       return model.Character.findOne({
         where: {
@@ -329,8 +331,8 @@ const CreateANewCharacter = (data) => {
       });
     })
     .catch((err) => {
-      //console.log(err)
-      res.send(err).status(500);
+      console.log(err)
+      //res.send(err).status(500);
     });
 };
 const GetAllClans = () => {

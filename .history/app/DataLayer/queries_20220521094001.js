@@ -55,6 +55,25 @@ const GetUserByLogin = (login) => {
   console.log("**** User ****", login);
   return model.User.findOne({
     where: { Login: login },
+    
+    include: [
+      {
+        model: model.Role,
+        include: [
+          {
+            model: model.RolePermission,
+            include: [
+              {
+                model: model.Permission,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        model: model.Level,
+      },
+    ],
   });
 };
 
@@ -301,7 +320,7 @@ const CreateANewCharacter = (data) => {
   };
   const characterCreated = model.Character.create(newCharacter);
   promises.push(characterCreated);
-  characterCreated
+  return characterCreated
     .then((w) => {
       return model.Character.findOne({
         where: {

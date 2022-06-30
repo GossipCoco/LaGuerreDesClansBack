@@ -52,11 +52,30 @@ const GetAllUsers = () => {
   });
 };
 const GetUserByLogin = (login) => {
-  console.log('**** User ****', login)
+  console.log("**** User ****", login);
   return model.User.findOne({
-      where: { Login: login }
-  })
-}
+    where: { Login: login },
+    
+    include: [
+      {
+        model: model.Role,
+        include: [
+          {
+            model: model.RolePermission,
+            include: [
+              {
+                model: model.Permission,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        model: model.Level,
+      },
+    ],
+  });
+};
 
 const GetUserById = (id) => {
   console.log("**** ID User ****", id);
@@ -292,29 +311,27 @@ const GetCharacterByNameSearch = (name) => {
 
 const CreateANewCharacter = (data) => {
   console.log(data);
-  const promises = []
+  const promises = [];
   let name = data.name;
   var str = name.replace(/\s+/g, "");
   const newCharacter = {
     Id: str,
     CurrentName: name,
   };
-  const characterCreated = model.Character.create(newCharacter)
-  promises.push(characterCreated)
-  characterCreated
-  .then(w => {
-    return model.Character.findOne({
-      where: {
-        Id: str
-      }
+  const characterCreated = model.Character.create(newCharacter);
+  promises.push(characterCreated);
+  return characterCreated
+    .then((w) => {
+      return model.Character.findOne({
+        where: {
+          Id: str,
+        },
+      });
     })
-})
-.catch(err => {
-    //console.log(err)
-    res.send(err).status(500)
-})
-
-  return characterCreated;
+    .catch((err) => {
+      console.log(err)
+      //res.send(err).status(500);
+    });
 };
 const GetAllClans = () => {
   return model.Clan.findAll({
