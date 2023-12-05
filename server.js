@@ -41,5 +41,5 @@ app
 const serv = http.createServer(app);
 serv.listen(PORT, () => {
   SocketIOController(serv, corsOptions);
-  console.log(`Server is running on port ${PORT}.`);
+  console.log(`Server is running on number port ${PORT}.`);
 });
