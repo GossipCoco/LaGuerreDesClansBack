@@ -1,0 +1,31 @@
+const SocketIO = require("socket.io")
+const queries = require('../DataLayer/queries')
+let io = {}
+const message = "Bienvenue sur l'application de révision"
+
+const SocketIOController = (server, options) => {
+    let socketId
+    io = SocketIO(server, options)
+    io.on("connection", (socket) => {        
+        console.log('first connection : ', socket.id)
+        socketId = socket.id
+        const usr='gossipCoco'
+        queries.GetUserById('gossipCoco')
+        .then(w => {
+            res.send({ob: w, res: true}).status(200)
+            sendMessageWelcome(io, socketId, usr, w,  message)     
+        })
+        .catch(err => {
+            console.log(err)
+            res.send(err).status(500)
+        })
+           
+    })
+    io.on('disconnect', socket => {
+        console.log('Disconnect')
+    })
+}
+const sendMessageWelcome = (io, socketId, message) =>{
+    io.to(socketId).emit('sendMessage', message)
+}
+module.exports = SocketIOController
